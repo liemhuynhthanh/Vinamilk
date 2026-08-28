@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.vinamilk.ruleengine.RuleEngineTest
 -------------------------------------------------------------------------------
-Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.111 s -- in com.vinamilk.ruleengine.RuleEngineTest
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.144 s -- in com.vinamilk.ruleengine.RuleEngineTest

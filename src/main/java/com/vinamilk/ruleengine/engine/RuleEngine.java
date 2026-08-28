@@ -9,15 +9,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+
 public class RuleEngine {
 
     private final Map<String, Function<Rule, RuleEvaluator>> evaluators = new HashMap<>();
 
     public RuleEngine() {
         evaluators.put("NOT_NULL", rule -> new NotNullEvaluator());
-        evaluators.put("EQ", rule -> new ComparisonEvaluator(rule.getOperator(), rule.getValue()));
-        evaluators.put("GT", rule -> new ComparisonEvaluator(rule.getOperator(), rule.getValue()));
-        evaluators.put("LT", rule -> new ComparisonEvaluator(rule.getOperator(), rule.getValue()));
+        evaluators.put("EQ", rule -> new EqualsEvaluator(rule.getValue()));
+        evaluators.put("GT", rule -> new GreaterThanEvaluator(rule.getValue()));
+        evaluators.put("LT", rule -> new LessThanEvaluator(rule.getValue()));
         evaluators.put("IN", rule -> new InEvaluator(rule.getValue()));
     }
 

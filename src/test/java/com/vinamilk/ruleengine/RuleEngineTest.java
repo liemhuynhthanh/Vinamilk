@@ -155,4 +155,22 @@ class RuleEngineTest {
         assertFalse(result.getResults().get(0).isPassed(), "R1 phải fail");
         assertEquals("channel must not be null", result.getResults().get(0).getMessage());
     }
+
+    @Test
+    @DisplayName("TC6: Các evaluator EQ và LT hoạt động độc lập")
+    void tc6_equalsAndLessThanOperators() {
+        Map<String, Object> data = new HashMap<>();
+        data.put("status", "ACTIVE");
+        data.put("price", 25);
+
+        List<Rule> rules = Arrays.asList(
+            new Rule("R1", "status", "EQ", "ACTIVE", "ERROR"),
+            new Rule("R2", "price", "LT", 30, "ERROR")
+        );
+
+        EvaluationResult result = engine.evaluate(data, rules);
+
+        assertTrue(result.isPassed());
+        result.getResults().forEach(ruleResult -> assertTrue(ruleResult.isPassed()));
+    }
 }
