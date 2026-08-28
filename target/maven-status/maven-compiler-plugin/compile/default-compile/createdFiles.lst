@@ -1,4 +1,9 @@
+com\vinamilk\ruleengine\engine\NotNullEvaluator.class
+com\vinamilk\ruleengine\engine\AbstractRuleEvaluator.class
 com\vinamilk\ruleengine\model\RuleResult.class
 com\vinamilk\ruleengine\model\EvaluationResult.class
 com\vinamilk\ruleengine\model\Rule.class
+com\vinamilk\ruleengine\engine\InEvaluator.class
 com\vinamilk\ruleengine\engine\RuleEngine.class
+com\vinamilk\ruleengine\engine\ComparisonEvaluator.class
+com\vinamilk\ruleengine\engine\RuleEvaluator.class

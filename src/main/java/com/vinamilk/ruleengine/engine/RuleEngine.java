@@ -5,9 +5,21 @@ import com.vinamilk.ruleengine.model.Rule;
 import com.vinamilk.ruleengine.model.RuleResult;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 public class RuleEngine {
+
+    private final Map<String, Function<Rule, RuleEvaluator>> evaluators = new HashMap<>();
+
+    public RuleEngine() {
+        evaluators.put("NOT_NULL", rule -> new NotNullEvaluator());
+        evaluators.put("EQ", rule -> new ComparisonEvaluator(rule.getOperator(), rule.getValue()));
+        evaluators.put("GT", rule -> new ComparisonEvaluator(rule.getOperator(), rule.getValue()));
+        evaluators.put("LT", rule -> new ComparisonEvaluator(rule.getOperator(), rule.getValue()));
+        evaluators.put("IN", rule -> new InEvaluator(rule.getValue()));
+    }
 
     public EvaluationResult evaluate(Map<String, Object> data, List<Rule> rules) {
         List<RuleResult> results = new ArrayList<>();
@@ -26,65 +38,23 @@ public class RuleEngine {
     }
 
     private RuleResult evaluateSingleRule(Map<String, Object> data, Rule rule) {
-        String field    = rule.getField();
-        String operator = rule.getOperator();
-        Object ruleVal  = rule.getValue();
-        Object dataVal  = data.get(field);
+        String field = rule.getField();
+        Object dataValue = data.get(field);
+        Function<Rule, RuleEvaluator> evaluatorFactory = evaluators.get(
+            rule.getOperator().toUpperCase()
+        );
 
-        boolean passed;
-        String  message = null;
-
-        switch (operator.toUpperCase()) {
-
-            case "NOT_NULL":
-                passed = (dataVal != null);
-                if (!passed) {
-                    message = field + " must not be null";
-                }
-                break;
-
-            case "EQ":
-                passed = (dataVal != null && dataVal.equals(ruleVal));
-                if (!passed) {
-                    message = field + " must equal " + ruleVal + ", got " + dataVal;
-                }
-                break;
-
-            case "GT":
-                passed = compareNumbers(dataVal, ruleVal) > 0;
-                if (!passed) {
-                    message = field + " must be greater than " + ruleVal + ", got " + dataVal;
-                }
-                break;
-
-            case "LT":
-                passed = compareNumbers(dataVal, ruleVal) < 0;
-                if (!passed) {
-                    message = field + " must be less than " + ruleVal + ", got " + dataVal;
-                }
-                break;
-
-            case "IN":
-                @SuppressWarnings("unchecked")
-                List<Object> allowedList = (List<Object>) ruleVal;
-                passed = (dataVal != null && allowedList.contains(dataVal));
-                if (!passed) {
-                    message = field + " must be one of " + allowedList + ", got " + dataVal;
-                }
-                break;
-
-            default:
-                passed  = false;
-                message = "Unknown operator: " + operator;
+        if (evaluatorFactory == null) {
+            return new RuleResult(
+                rule.getRuleId(),
+                false,
+                "Unknown operator: " + rule.getOperator()
+            );
         }
 
-        return new RuleResult(rule.getRuleId(), passed, passed ? null : message);
-    }
-
-    private int compareNumbers(Object dataVal, Object ruleVal) {
-        if (dataVal == null) return -1;
-        double d = ((Number) dataVal).doubleValue();
-        double r = ((Number) ruleVal).doubleValue();
-        return Double.compare(d, r);
+        RuleEvaluator evaluator = evaluatorFactory.apply(rule);
+        boolean passed = evaluator.evaluate(dataValue);
+        String message = passed ? null : evaluator.failureMessage(field, dataValue);
+        return new RuleResult(rule.getRuleId(), passed, message);
     }
 }
