@@ -1,0 +1,4 @@
+com\vinamilk\ruleengine\model\RuleResult.class
+com\vinamilk\ruleengine\model\EvaluationResult.class
+com\vinamilk\ruleengine\model\Rule.class
+com\vinamilk\ruleengine\engine\RuleEngine.class
