@@ -78,14 +78,9 @@ public class RuleEngine {
                 message = "Unknown operator: " + operator;
         }
 
-        // Nếu pass thì message = null (không cần thông báo lỗi)
         return new RuleResult(rule.getRuleId(), passed, passed ? null : message);
     }
 
-    /**
-     * So sánh 2 số — hỗ trợ Integer, Long, Double, Float.
-     * @return âm nếu dataVal < ruleVal, 0 nếu bằng, dương nếu lớn hơn
-     */
     private int compareNumbers(Object dataVal, Object ruleVal) {
         if (dataVal == null) return -1;
         double d = ((Number) dataVal).doubleValue();

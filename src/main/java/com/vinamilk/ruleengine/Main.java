@@ -8,10 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Test Rule Engine bằng main method
- * Chạy: java -cp target/classes com.vinamilk.ruleengine.Main
- */
 public class Main {
 
     public static void main(String[] args) {
@@ -47,10 +43,6 @@ public class Main {
         System.out.println("TC5: Field không tồn tại");
         testCase5(engine);
     }
-
-    /**
-     * TC1: Tất cả rules pass
-     */
     private static void testCase1(RuleEngine engine) {
         Map<String, Object> data = new HashMap<>();
         data.put("quantity",     100);
@@ -65,7 +57,6 @@ public class Main {
 
         EvaluationResult result = engine.evaluate(data, rules);
         System.out.println(result);
-        System.out.println("✅ Expected: passed=true");
     }
 
     /**
@@ -82,7 +73,7 @@ public class Main {
 
         EvaluationResult result = engine.evaluate(data, rules);
         System.out.println(result);
-        System.out.println("✅ Expected: passed=false (quantity=-5 < 0)");
+
     }
 
     /**
@@ -100,7 +91,6 @@ public class Main {
 
         EvaluationResult result = engine.evaluate(data, rules);
         System.out.println(result);
-        System.out.println("✅ Expected: passed=true (WARNING không block)");
     }
 
     /**
@@ -118,7 +108,7 @@ public class Main {
         dataValid.put("channel", "Lazada");
         EvaluationResult r1 = engine.evaluate(dataValid, rules);
         System.out.println("  " + r1);
-        System.out.println("  ✅ Expected: passed=true");
+
 
         System.out.println();
 
@@ -128,7 +118,7 @@ public class Main {
         dataInvalid.put("channel", "Tiki");
         EvaluationResult r2 = engine.evaluate(dataInvalid, rules);
         System.out.println("  " + r2);
-        System.out.println("  ✅ Expected: passed=false");
+
     }
 
     /**
@@ -137,7 +127,6 @@ public class Main {
     private static void testCase5(RuleEngine engine) {
         Map<String, Object> data = new HashMap<>();
         data.put("quantity", 50);
-        // Không có field "channel"
 
         List<Rule> rules = Arrays.asList(
             new Rule("R1", "channel", "NOT_NULL", null, "ERROR")
@@ -145,6 +134,5 @@ public class Main {
 
         EvaluationResult result = engine.evaluate(data, rules);
         System.out.println(result);
-        System.out.println("✅ Expected: passed=false (field 'channel' không tồn tại)");
     }
 }
